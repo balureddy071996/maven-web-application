@@ -30,29 +30,12 @@ properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKe
 
 def mavenHome = tool name: "maven3.9.0"
 
-properties([[$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
-
-stage('Checkout Code')
-{
- git branch: 'development', credentialsId: '267d9e51-57cb-415f-ac7b-1f7b359bc1c8', url: 'https://github.com/balureddy071996/maven-web-application.git'  
+try{
+}//Try Closing
+catch(e){
+currentBuild.result = "FAILED" 
 }
-stage('Build')
-{
-sh "${mavenHome}/bin/mvn clean package"    
+finally{
+SendSlackNotification(currentBuild.result)
 }
-stage('ExecuteSonarQubeReport')
-{
-sh "${mavenHome}/bin/mvn clean sonar:sonar"
-}
-stage('UploadArtifactsIntoArtifactoryRepo')
-{
-sh "${mavenHome}/bin/mvn clean deploy"    
-}
-stage('DeployAppintoTomcatServer')
-{
-sshagent(['143ecd6d-25ff-49bd-aa4f-3e1a7705cc13'])
-{
-sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.39.42:/opt/apache-tomcat-9.0.71/webapps"        
-}
-}
-}
+}//Node closing
