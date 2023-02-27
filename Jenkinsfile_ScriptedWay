@@ -44,12 +44,12 @@ stage('Build')
 {
 sh "${mavenHome}/bin/mvn clean package"
 }
+/*
 //execute sonarqube report
 stage('ExecuteSonarQubeReport')
 {
 sh "${mavenHome}/bin/mvn sonar:sonar"
 }
-/*
 //uploadArtifactsIntoArtifactoryRepo
 stage('UploadArtifactsIntoNexus')
 {
