@@ -9,7 +9,7 @@
 </head>
 </head>
 <body>
-<h1 align="center">Welcome to Mithun Technologies Private Limited. Bengaluru,Karnataka,India - GitHub Webhook latest </h1>
+<h1 align="center">Welcome to Mithun Technologies Private Limited. Bengaluru,Karnataka,India - Scriptedway </h1>
 <h1 align="center"> Mithun Technologies- Very Good Training center for DevOps with AWS in Maratha Halli Bangalore India and also for Job Assitance Job Support also...Teaching Real Time scnerios. Course will start on March 1, 2022. This is Github Webhook demo</h1>
 <hr>
 <br>
