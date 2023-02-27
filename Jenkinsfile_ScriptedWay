@@ -26,11 +26,42 @@ def notifyBuild(String buildStatus = 'STARTED') {
 
 node{
 
+echo "Job Name is: ${env.JOB_NAME}"
+echo "Node Name is: ${env.NODE_NAME}"
+
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
 
 def mavenHome = tool name: "maven3.9.0"
 
 try{
+//Get the code from Github repo
+stage('CheckoutCode')
+{
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+}
+//Do the build by using Maven
+stage('Build")
+{
+sh "${mavenHome}/bin/mvn clean package"
+}
+//execute sonarqube report
+stage('ExecuteSonarQubeReport')
+{
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+//uploadArtifactsIntoArtifactoryRepo
+stage('UploadArtifactsIntoNexus')
+{
+sh "${mavenHome}/bin/mvn deploy"
+}
+//Deploy Application Into Tomcat Server
+stage('DeployApplicationIntoTomcatServer')
+{
+sshagent(['ac72a201-0381-4aa3-9ee7-7d7e543a964d']) 
+{
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.39.42:/opt/apache-tomcat-9.0.71/webapps/"
+}
+}
 }//Try Closing
 catch(e){
 currentBuild.result = "FAILED" 
