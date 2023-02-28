@@ -29,6 +29,13 @@ pipeline{
     tools{
         maven 'maven3.9.0'
     }
+    options {
+  timestamps()
+    }
+triggers {
+  pollSCM ('* * * * *')
+}
+
 stages{
 //This stage will get the source code from GitHub
 stage('Checkout Code'){
